@@ -44,8 +44,6 @@ void	print_result(const t_bit *result)
 
 void	handle_sigusr(int code)
 {
-	static size_t	bit_len = 0;
-	static t_bit	result[BITS + 1];
 	t_bit			bit;
 
 	if (code == SIGUSR1)
@@ -54,6 +52,20 @@ void	handle_sigusr(int code)
 		bit = 1;
 	else
 		return ;
+	enqueue(bit);
+}
+
+void	process_queue()
+{
+	static size_t	bit_len = 0;
+	static t_bit	result[BITS + 1];
+	t_bit			bit;
+
+	if (get_queue_size() == 0)
+		return ;
+	bit = dequeue();
+	if (bit == DEFAULT)
+		return ;
 	result[bit_len++] = bit;
 	if (bit_len == BITS)
 	{
@@ -61,15 +73,17 @@ void	handle_sigusr(int code)
 		print_result(result);
 		while (bit_len > 0)
 			result[bit_len--] = 0;
+		pause();
 	}
 }
 
 int	main(void)
 {
 	ft_printf("%d\n", getpid());
+	init_queue();
 	signal(SIGUSR1, handle_sigusr);
 	signal(SIGUSR2, handle_sigusr);
 	while (1)
-		pause();
+		process_queue();
 	return (0);
 }

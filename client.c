@@ -57,9 +57,11 @@ void	send_char(pid_t pid, const unsigned char c)
 void	send_message(pid_t pid, const unsigned char *message)
 {
 	size_t	i;
+	size_t	len;
 
 	i = 0;
-	while (i <= ft_strlen((char *)message))
+	len = ft_strlen((char *)message);
+	while (i <= len)
 	{
 		send_char(pid, message[i++]);
 		usleep(SLEEP);

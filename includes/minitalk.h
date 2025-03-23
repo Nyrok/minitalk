@@ -18,8 +18,15 @@
 # include "./ft_printf.h"
 # include "./libft.h"
 # define BITS 8
-# define SLEEP 200
+# define QUEUE_SIZE 8
+# define SLEEP 1
+# define DEFAULT 2
 
 typedef unsigned char	t_bit;
+
+void	init_queue();
+size_t	get_queue_size();
+void	enqueue(t_bit bit);
+t_bit	dequeue();
 
 #endif
