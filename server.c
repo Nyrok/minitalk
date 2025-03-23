@@ -12,29 +12,20 @@
 
 #include "./includes/minitalk.h"
 
-char	pow(char *result)
+int		ft_pow(int a, int b)
 {
-	if (!ft_strlen(result))
-	{
-	  result = malloc((BITS + 1) * sizeof(char));
-	  if (!result)
-		kill(getpid(), SIGKILL);
+	int	result;
+
+	result = a;
+	if (b == 0)
+		return (1);
+	while (b-- > 1) {
+		result *= a;
 	}
 	return (result);
 }
 
-char	*init_result(char *result)
-{
-	if (!ft_strlen(result))
-	{
-	  result = malloc((BITS + 1) * sizeof(char));
-	  if (!result)
-		kill(getpid(), SIGKILL);
-	}
-	return (result);
-}
-
-void	print_result(char *result)
+void	print_result(const bit_t *result)
 {
 	size_t			i;
 	unsigned char	c;
@@ -43,35 +34,35 @@ void	print_result(char *result)
 	i = 0;
 	while (i < BITS)
 	{
-		result[BITS - 1 - i];
+		c += result[BITS - 1 - i] * ft_pow(2, i);
 		i++;
 	}
-	if (c == '\0')
+	if (c == 0)
 		ft_printf("\n");
-	free(result);	
+	else
+		ft_printf("%c", c);
 }
 
 void	handle_sigusr(int code)
 {
 	static size_t	bit_len;
-	static char		*result;
-	int				bit;
+	static bit_t	result[BITS + 1];
+	bit_t			bit;
 
-	result = init_result(result);
 	if (code == SIGUSR1)
 		bit = 0;
 	else if (code == SIGUSR2)
 		bit = 1;
-	if (bit_len == BITS - 1)
+	else
+		return ;
+	if (!bit_len)
+		bit_len = 0;
+	result[bit_len++] = bit;
+	if (bit_len == BITS)
 	{
+		result[bit_len] = '\0';
 		print_result(result);
 		bit_len = 0;
-	}
-	else
-	{
-		if (!bit_len)
-			bit_len = 0;
-		result[bit_len++] = bit;
 	}
 }
 
