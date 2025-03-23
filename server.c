@@ -20,9 +20,7 @@ int	ft_pow(int a, int b)
 	if (b == 0)
 		return (1);
 	while (b-- > 1)
-	{
 		result *= a;
-	}
 	return (result);
 }
 
@@ -46,7 +44,7 @@ void	print_result(const t_bit *result)
 
 void	handle_sigusr(int code)
 {
-	static size_t	bit_len;
+	static size_t	bit_len = 0;
 	static t_bit	result[BITS + 1];
 	t_bit			bit;
 
@@ -56,14 +54,13 @@ void	handle_sigusr(int code)
 		bit = 1;
 	else
 		return ;
-	if (!bit_len)
-		bit_len = 0;
 	result[bit_len++] = bit;
 	if (bit_len == BITS)
 	{
 		result[bit_len] = '\0';
 		print_result(result);
-		bit_len = 0;
+		while (bit_len > 0)
+			result[bit_len--] = 0;
 	}
 }
 
@@ -73,8 +70,6 @@ int	main(void)
 	signal(SIGUSR1, handle_sigusr);
 	signal(SIGUSR2, handle_sigusr);
 	while (1)
-	{
 		pause();
-	}
 	return (0);
 }

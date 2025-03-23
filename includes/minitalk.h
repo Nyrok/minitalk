@@ -14,9 +14,11 @@
 # define MINITALK_H
 # include <unistd.h>
 # include <signal.h>
+# include <sys/types.h>
 # include "./ft_printf.h"
 # include "./libft.h"
 # define BITS 8
+# define SLEEP 200
 
 typedef unsigned char	t_bit;
 

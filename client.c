@@ -18,6 +18,10 @@ t_bit	*ft_chartobinary(unsigned char c)
 	size_t	i;
 
 	result = ft_calloc(BITS, sizeof(t_bit));
+	if (!result)
+		exit(1);
+	if (!c)
+		return (result);
 	i = BITS - 1;
 	while (c > 1)
 	{
@@ -44,8 +48,8 @@ void	send_char(pid_t pid, const unsigned char c)
 		else
 			signal = SIGUSR2;
 		if (kill(pid, signal) == -1)
-			break ;
-		usleep(1000);
+			exit(1);
+		usleep(SLEEP);
 		i++;
 	}
 }
@@ -57,8 +61,8 @@ void	send_message(pid_t pid, const unsigned char *message)
 	i = 0;
 	while (i <= ft_strlen((char *)message))
 	{
-		send_char(pid, message[i]);
-		i++;
+		send_char(pid, message[i++]);
+		usleep(SLEEP);
 	}
 }
 
