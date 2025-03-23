@@ -12,12 +12,12 @@
 
 #include "./includes/minitalk.h"
 
-bit_t	*ft_chartobinary(unsigned char c)
+t_bit	*ft_chartobinary(unsigned char c)
 {
-	bit_t	*result;
+	t_bit	*result;
 	size_t	i;
 
-	result = ft_calloc(BITS, sizeof(bit_t));
+	result = ft_calloc(BITS, sizeof(t_bit));
 	i = BITS - 1;
 	while (c > 1)
 	{
@@ -31,7 +31,7 @@ bit_t	*ft_chartobinary(unsigned char c)
 
 void	send_char(pid_t pid, const unsigned char c)
 {
-	bit_t	*binary;
+	t_bit	*binary;
 	size_t	i;
 	int		signal;
 
@@ -62,9 +62,9 @@ void	send_message(pid_t pid, const unsigned char *message)
 	}
 }
 
-int		main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	pid_t server_pid;
+	pid_t	server_pid;
 
 	if (argc != 3)
 	{
