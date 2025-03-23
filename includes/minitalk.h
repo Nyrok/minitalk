@@ -18,6 +18,6 @@
 # include "./libft.h"
 # define BITS 8
 
-typedef unsigned char bit_t;
+typedef unsigned char	t_bit;
 
 #endif

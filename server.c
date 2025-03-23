@@ -12,20 +12,21 @@
 
 #include "./includes/minitalk.h"
 
-int		ft_pow(int a, int b)
+int	ft_pow(int a, int b)
 {
 	int	result;
 
 	result = a;
 	if (b == 0)
 		return (1);
-	while (b-- > 1) {
+	while (b-- > 1)
+	{
 		result *= a;
 	}
 	return (result);
 }
 
-void	print_result(const bit_t *result)
+void	print_result(const t_bit *result)
 {
 	size_t			i;
 	unsigned char	c;
@@ -46,8 +47,8 @@ void	print_result(const bit_t *result)
 void	handle_sigusr(int code)
 {
 	static size_t	bit_len;
-	static bit_t	result[BITS + 1];
-	bit_t			bit;
+	static t_bit	result[BITS + 1];
+	t_bit			bit;
 
 	if (code == SIGUSR1)
 		bit = 0;
@@ -66,7 +67,7 @@ void	handle_sigusr(int code)
 	}
 }
 
-int		main(void)
+int	main(void)
 {
 	ft_printf("%d\n", getpid());
 	signal(SIGUSR1, handle_sigusr);
