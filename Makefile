@@ -23,7 +23,7 @@ LIB_FT = libft/libft.a
 
 all: $(SERVER) $(CLIENT)
 
-bonus: $(SERVER) $(CLIENT)
+bonus: $(SERVER_BONUS) $(CLIENT_BONUS)
 
 $(LIB_PRINTF):
 	make -C ft_printf
