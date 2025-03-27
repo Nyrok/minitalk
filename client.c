@@ -51,12 +51,12 @@ void	send_char(pid_t pid, const unsigned char c)
 			signal = SIGUSR2;
 		if (kill(pid, signal) == -1)
 			exit(1);
+		if (++i == BITS)
+			free(binary);
 		while (!g_received_signal)
 			pause();
 		g_received_signal = 0;
-		i++;
 	}
-	free(binary);
 }
 
 void	send_message(pid_t pid, const unsigned char *message)
