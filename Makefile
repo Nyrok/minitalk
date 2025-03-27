@@ -1,8 +1,8 @@
 # Définition des variables
 CX = cc
 CXFLAGS = -Wall -Wextra -Werror
-SERVER_SRCS = server.c queue.c
-SERVER_OBJS = $(SERVER_SRCS:.c=.o)
+SERVER_SRC = server.c
+SERVER_OBJ = $(SERVER_SRC:.c=.o)
 SERVER = server
 CLIENT_SRC = client.c
 CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
@@ -18,8 +18,8 @@ $(LIB_PRINTF):
 $(LIB_FT):
 	make -C libft
 
-$(SERVER): $(SERVER_OBJS) $(LIB_PRINTF)
-	$(CX) $(CXFLAGS) $(SERVER_OBJS) -o $(SERVER) $(LIB_PRINTF)
+$(SERVER): $(SERVER_OBJ) $(LIB_PRINTF)
+	$(CX) $(CXFLAGS) $(SERVER_OBJ) -o $(SERVER) $(LIB_PRINTF)
 
 $(CLIENT): $(CLIENT_OBJ) $(LIB_PRINTF) $(LIB_FT)
 	$(CX) $(CXFLAGS) $(CLIENT_OBJ) -o $(CLIENT) $(LIB_PRINTF) $(LIB_FT)
@@ -28,7 +28,7 @@ $(CLIENT): $(CLIENT_OBJ) $(LIB_PRINTF) $(LIB_FT)
 	$(CX) $(CXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(SERVER_OBJS)
+	rm -f $(SERVER_OBJ)
 	rm -f $(CLIENT_OBJ)
 	make clean -C ft_printf
 	make clean -C libft

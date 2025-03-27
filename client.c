@@ -12,6 +12,8 @@
 
 #include "./includes/minitalk.h"
 
+volatile sig_atomic_t	g_received_signal = 0;
+
 t_bit	*ft_chartobinary(unsigned char c)
 {
 	t_bit	*result;
@@ -49,28 +51,39 @@ void	send_char(pid_t pid, const unsigned char c)
 			signal = SIGUSR2;
 		if (kill(pid, signal) == -1)
 			exit(1);
-		usleep(SLEEP);
+		while (!g_received_signal)
+			pause();
+		g_received_signal = 0;
 		i++;
 	}
+	free(binary);
 }
 
 void	send_message(pid_t pid, const unsigned char *message)
 {
 	size_t	i;
-	size_t	len;
 
 	i = 0;
-	len = ft_strlen((char *)message);
-	while (i <= len)
-	{
+	while (message[i] != '\0')
 		send_char(pid, message[i++]);
-		usleep(SLEEP);
+	send_char(pid, '\0');
+}
+
+void	handle_ack(int code)
+{
+	if (code == SIGUSR1)
+		g_received_signal = 1;
+	else if (code == SIGUSR2)
+	{
+		ft_printf("Message successfully received by the server, exiting...\n");
+		exit(0);
 	}
 }
 
 int	main(int argc, char **argv)
 {
-	pid_t	server_pid;
+	pid_t				server_pid;
+	struct sigaction	sa;
 
 	if (argc != 3)
 	{
@@ -78,5 +91,16 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	server_pid = ft_atoi(argv[1]);
+	sa.sa_handler = handle_ack;
+	if (sigemptyset(&sa.sa_mask) == -1)
+		return (1);
+	sa.sa_flags = 0;
+	if (sigaction(SIGUSR1, &sa, NULL) == -1)
+		return (1);
+	if (sigaction(SIGUSR2, &sa, NULL) == -1)
+		return (1);
 	send_message(server_pid, (unsigned char *)argv[2]);
+	while (1)
+		pause();
+	return (0);
 }

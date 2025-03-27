@@ -24,7 +24,7 @@ int	ft_pow(int a, int b)
 	return (result);
 }
 
-void	print_result(const t_bit *result)
+void	print_result(pid_t pid, const t_bit *result)
 {
 	size_t			i;
 	unsigned char	c;
@@ -37,53 +37,51 @@ void	print_result(const t_bit *result)
 		i++;
 	}
 	if (c == 0)
+	{
 		ft_printf("\n");
+		kill(pid, SIGUSR2);
+	}
 	else
 		ft_printf("%c", c);
 }
 
-void	handle_sigusr(int code)
+void	handle_sigusr(int sig, siginfo_t *siginfo, void *context)
 {
 	t_bit			bit;
+	static size_t	bit_len = 0;
+	static t_bit	result[BITS];
 
-	if (code == SIGUSR1)
+	(void)context;
+	if (sig == SIGUSR1)
 		bit = 0;
-	else if (code == SIGUSR2)
+	else if (sig == SIGUSR2)
 		bit = 1;
 	else
-		return ;
-	enqueue(bit);
-}
-
-void	process_queue()
-{
-	static size_t	bit_len = 0;
-	static t_bit	result[BITS + 1];
-	t_bit			bit;
-
-	if (get_queue_size() == 0)
-		return ;
-	bit = dequeue();
-	if (bit == DEFAULT)
 		return ;
 	result[bit_len++] = bit;
 	if (bit_len == BITS)
 	{
-		result[bit_len] = '\0';
-		print_result(result);
+		bit_len--;
+		print_result(siginfo->si_pid, result);
 		while (bit_len > 0)
 			result[bit_len--] = 0;
-		pause();
 	}
+	kill(siginfo->si_pid, SIGUSR1);
 }
 
 int	main(void)
 {
+	struct sigaction	sa;
+
+	sa.sa_flags = SA_SIGINFO;
+	sa.sa_sigaction = handle_sigusr;
+	sigemptyset(&sa.sa_mask);
+	if (sigaction(SIGUSR1, &sa, NULL) == -1)
+		return (1);
+	if (sigaction(SIGUSR2, &sa, NULL) == -1)
+		return (1);
 	ft_printf("%d\n", getpid());
-	init_queue();
-	signal(SIGUSR1, handle_sigusr);
-	signal(SIGUSR2, handle_sigusr);
 	while (1)
-		process_queue();
+		pause();
 	return (0);
 }
